@@ -11,7 +11,6 @@ class Draft extends React.Component {
       editorState: EditorState.createEmpty()
     };
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
-    this.getHTML = this.getHTML.bind(this);
   }
   onEditorStateChange(editorState) {
     this.setState({
@@ -19,12 +18,19 @@ class Draft extends React.Component {
     });
   }
 
-  getHTML() {
-    console.log(
-      "Draft : " +
-        draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+  downloadHtmlFile = () => {
+    const element = document.createElement("a");
+    const file = new Blob(
+      [draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))],
+      {
+        type: "html"
+      }
     );
-  }
+    element.href = URL.createObjectURL(file);
+    element.download = "DraftEditorText.html";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
 
   render() {
     return (
@@ -36,7 +42,7 @@ class Draft extends React.Component {
           onEditorStateChange={this.onEditorStateChange}
           placeholder="Begin typing..."
         />
-        <button className="ui primary button" onClick={this.getHTML}>
+        <button className="ui primary button" onClick={this.downloadHtmlFile}>
           Get HTML
         </button>
       </div>

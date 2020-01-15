@@ -7,7 +7,6 @@ class Quill extends React.Component {
     super(props);
     this.state = { text: "" };
     this.handleChange = this.handleChange.bind(this);
-    this.getHTML = this.getHTML.bind(this);
   }
 
   modules = {
@@ -21,6 +20,7 @@ class Quill extends React.Component {
         { indent: "+1" }
       ],
       ["link", "image"],
+      [{ align: [] }],
       ["clean"]
     ]
   };
@@ -36,16 +36,24 @@ class Quill extends React.Component {
     "bullet",
     "indent",
     "link",
-    "image"
+    "image",
+    "align"
   ];
 
   handleChange(value) {
     this.setState({ text: value });
   }
 
-  getHTML() {
-    console.log("Quill : " + this.state.text);
-  }
+  downloadHtmlFile = () => {
+    const element = document.createElement("a");
+    const file = new Blob([this.state.text], {
+      type: "html"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "QuillEditorText.html";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
 
   render() {
     return (
@@ -57,7 +65,7 @@ class Quill extends React.Component {
           modules={this.modules}
           formats={this.formats}
         />
-        <button className="ui primary button" onClick={this.getHTML}>
+        <button className="ui primary button" onClick={this.downloadHtmlFile}>
           Get HTML
         </button>
       </div>
