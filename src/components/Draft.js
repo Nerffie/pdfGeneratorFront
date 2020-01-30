@@ -20,6 +20,7 @@ class Draft extends React.Component {
 
   downloadHtmlFile = () => {
     const element = document.createElement("a");
+
     const file = new Blob(
       [draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))],
       {
@@ -33,6 +34,7 @@ class Draft extends React.Component {
   };
 
   render() {
+    console.log(this.state.editorState.getCurrentContent());
     return (
       <div>
         <Editor
