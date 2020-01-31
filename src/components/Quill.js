@@ -1,6 +1,7 @@
 import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import BackEnd from "../api/BackEnd";
 
 class Quill extends React.Component {
   constructor(props) {
@@ -106,14 +107,10 @@ class Quill extends React.Component {
     ]
   };
 
-  /*componentDidMount() {
-    this.setState({ content: this.defaultContent });
-    // this.setState({ editor: Editor.setContents(this.state.content) });
-  }*/
   handleChange(value, delta, source, editor) {
-    this.setState({ text: value });
-    this.setState({ delta: delta });
-    this.setState({ editor: editor });
+    //this.setState({ text: value });
+    //this.setState({ delta: delta });
+    //this.setState({ editor: editor });
     this.setState({ content: editor.getContents() });
     //onChange(content, delta, source, editor)
     //console.log(this.state.content);
@@ -122,7 +119,9 @@ class Quill extends React.Component {
   }
 
   saveToDB() {
+    const content = this.state.content;
     console.log(this.state.content);
+    BackEnd.post("/json", { content });
 
     //onChange(content, delta, source, editor)
   }
