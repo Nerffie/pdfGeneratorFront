@@ -2,13 +2,26 @@ import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import BackEnd from "../api/BackEnd";
-
+import { Link } from "react-router-dom";
 class Quill extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { text: "", delta: {}, source: {}, editor: {}, content: {} };
+    this.state = {
+      content: {},
+      id: null,
+      oldEditorContent: {}
+    };
     this.handleChange = this.handleChange.bind(this);
     this.saveToDB = this.saveToDB.bind(this);
+  }
+
+  componentDidMount() {
+    if (typeof this.props.match != "undefined") {
+      this.setState({
+        id: this.props.match.params.id,
+        oldEditorContent: this.props.location.state.oldEditorContent
+      });
+    }
   }
 
   modules = {
@@ -108,34 +121,23 @@ class Quill extends React.Component {
   };
 
   handleChange(value, delta, source, editor) {
-    //this.setState({ text: value });
-    //this.setState({ delta: delta });
-    //this.setState({ editor: editor });
     this.setState({ content: editor.getContents() });
-    //onChange(content, delta, source, editor)
-    //console.log(this.state.content);
-    //editor.setContents(this.defaultContent);
-    console.log(this.state.content);
   }
 
-  saveToDB() {
+  saveToDB = async () => {
     const content = this.state.content;
-    console.log(this.state.content);
-    BackEnd.post("/json", { content });
-
-    //onChange(content, delta, source, editor)
-  }
-
-  /*downloadHtmlFile = () => {
-    const element = document.createElement("a");
-    const file = new Blob([this.state.text], {
-      type: "html"
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = "QuillEditorText.html";
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  };*/
+    console.log(content);
+    if (typeof this.props.match != "undefined") {
+      const response = await BackEnd.put(
+        `/editor/id/${this.props.match.params.id}`,
+        { content }
+      );
+      console.log(response.statusText);
+    } else {
+      const response = await BackEnd.post("/editor", { content });
+      console.log(response.statusText);
+    }
+  };
 
   render() {
     return (
@@ -149,9 +151,11 @@ class Quill extends React.Component {
           modules={this.modules}
           formats={this.formats}
         />
-        <button className="ui primary button" onClick={this.saveToDB}>
-          Sauvegarder
-        </button>
+        <Link to={{ pathname: "/" }}>
+          <button className="ui primary button" onClick={this.saveToDB}>
+            Sauvegarder
+          </button>
+        </Link>
       </div>
     );
   }
