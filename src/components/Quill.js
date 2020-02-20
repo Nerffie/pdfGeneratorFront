@@ -21,6 +21,8 @@ class Quill extends React.Component {
         id: this.props.match.params.id,
         oldEditorContent: this.props.location.state.oldEditorContent
       });
+    }else{
+      this.setState({oldEditorContent:this.defaultContent});
     }
   }
 
@@ -125,16 +127,16 @@ class Quill extends React.Component {
   }
 
   saveToDB = async () => {
-    const content = this.state.content;
-    console.log(content);
+    const ops = this.state.content.ops;
+    console.log(ops);
     if (typeof this.props.match != "undefined") {
       const response = await BackEnd.put(
         `/editor/id/${this.props.match.params.id}`,
-        { content }
+        { ops }
       );
       console.log(response.statusText);
     } else {
-      const response = await BackEnd.post("/editor", { content });
+      const response = await BackEnd.post("/editor", { ops });
       console.log(response.statusText);
     }
   };
@@ -145,7 +147,7 @@ class Quill extends React.Component {
         <h1>Quill Editor</h1>
         <ReactQuill
           theme="snow"
-          defaultValue={this.defaultContent}
+          defaultValue={this.state.oldEditorContent}
           //value={this.state.content}
           onChange={this.handleChange}
           modules={this.modules}
