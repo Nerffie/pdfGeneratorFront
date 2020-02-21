@@ -15,48 +15,6 @@ class Quill extends React.Component {
     this.saveToDB = this.saveToDB.bind(this);
   }
 
-  componentDidMount() {
-    if (typeof this.props.match != "undefined") {
-      this.setState({
-        id: this.props.match.params.id,
-        oldEditorContent: this.props.location.state.oldEditorContent
-      });
-    }else{
-      this.setState({oldEditorContent:this.defaultContent});
-    }
-  }
-
-  modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" }
-      ],
-      ["link", "image"],
-      [{ align: [] }],
-      ["clean"]
-    ]
-  };
-
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "align"
-  ];
-
   defaultContent = {
     ops: [
       {
@@ -122,13 +80,54 @@ class Quill extends React.Component {
     ]
   };
 
+  componentWillMount() {
+    if (typeof this.props.match != "undefined") {
+      this.setState({
+        id: this.props.match.params.id,
+        oldEditorContent: JSON.parse(this.props.location.state.oldEditorContent)
+      });
+    } else {
+      this.setState({ oldEditorContent: this.defaultContent });
+    }
+  }
+
+  modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" }
+      ],
+      ["link", "image"],
+      [{ align: [] }],
+      ["clean"]
+    ]
+  };
+
+  formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "align"
+  ];
+
   handleChange(value, delta, source, editor) {
     this.setState({ content: editor.getContents() });
   }
 
   saveToDB = async () => {
     const ops = this.state.content.ops;
-    console.log(ops);
     if (typeof this.props.match != "undefined") {
       const response = await BackEnd.put(
         `/editor/id/${this.props.match.params.id}`,
@@ -136,6 +135,7 @@ class Quill extends React.Component {
       );
       console.log(response.statusText);
     } else {
+      // I send an array of objects
       const response = await BackEnd.post("/editor", { ops });
       console.log(response.statusText);
     }
