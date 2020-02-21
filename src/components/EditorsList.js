@@ -24,7 +24,9 @@ class EditorsList extends React.Component {
     if (this.state.contracts === []) {
       return <div>Fetching contracts ...</div>;
     } else {
-      return <div>{this.renderContracts()}</div>;
+      return (
+        <div className="ui relaxed divided list">{this.renderContracts()}</div>
+      );
     }
   }
 }
