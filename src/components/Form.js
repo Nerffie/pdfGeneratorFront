@@ -3,11 +3,12 @@ import BackEnd from "../api/BackEnd";
 import FormItem from "./FormItem";
 
 class Form extends React.Component {
+  values = [];
+  occurences = [];
   constructor(props) {
     super(props);
-    this.state = { var: {}, contractId: null, values: [] };
+    this.state = { var: {}, contractId: null };
   }
-
   componentDidMount() {
     this.onFormLoad();
   }
@@ -16,24 +17,25 @@ class Form extends React.Component {
     const response = await BackEnd.get(
       `/form/${this.props.location.state.contract}`
     );
+    //console.log(response.data);
+    //console.log(JSON.parse(response.data));
     this.setState({
       var: JSON.parse(response.data).var,
       contractId: JSON.parse(response.data).idContrat
     });
   };
 
-  parentCallback(value, id) {
-    let values = [...this.state.values]; // create the copy of state array
-    values[id] = value; //new value
-    this.setState({ values });
-  }
+  parentCallback = (value, id) => {
+    this.values[id] = value;
+  };
 
   splitVariable() {
     const vars = this.state.var.split(",");
     let i = -1;
     return vars.map(e => {
-      let field = e.replace(/"/g, "").split(":");
+      let field = e.replace(/"/g, "").split(": ");
       i++;
+      this.occurences[i] = field[1];
       return (
         <FormItem
           key={i}
@@ -46,14 +48,30 @@ class Form extends React.Component {
     });
   }
 
+  buildVariable = async () => {
+    let newvar = this.state.var;
+    this.occurences.forEach((occ, index) => {
+      newvar = newvar.replace(occ, this.values[index]);
+    });
+    const response = await BackEnd.post(
+      `/form/${this.props.location.state.contract}`,
+      newvar
+    );
+    console.log(response);
+    //console.log(this.props.history);
+    this.props.history.push("/");
+  };
+
   render() {
     if (this.state.contractId) {
       if (this.state.var.length !== 0) {
         return (
           <div>
             Form id : {this.props.location.state.contract}
-            <div>{this.splitVariable()}</div>
-            <button className="ui button primary">Generer PDF</button>
+            <form>{this.splitVariable()}</form>
+            <button className="ui button primary" onClick={this.buildVariable}>
+              Generer PDF
+            </button>
           </div>
         );
       } else {

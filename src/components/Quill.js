@@ -2,7 +2,7 @@ import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import BackEnd from "../api/BackEnd";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 class Quill extends React.Component {
   constructor(props) {
     super(props);
@@ -81,12 +81,16 @@ class Quill extends React.Component {
   };
 
   componentWillMount() {
-    if (typeof this.props.match != "undefined") {
+    //console.log(this.props.match);
+    //console.log(this.props);
+    if (typeof this.props.location.state != "undefined") {
+      console.log("updating");
       this.setState({
         id: this.props.match.params.id,
         oldEditorContent: JSON.parse(this.props.location.state.oldEditorContent)
       });
     } else {
+      console.log("creating");
       this.setState({ oldEditorContent: this.defaultContent });
     }
   }
@@ -128,7 +132,7 @@ class Quill extends React.Component {
 
   saveToDB = async () => {
     const ops = this.state.content.ops;
-    if (typeof this.props.match != "undefined") {
+    if (typeof this.props.location.state != "undefined") {
       const response = await BackEnd.put(
         `/editor/id/${this.props.match.params.id}`,
         { ops }
@@ -137,8 +141,10 @@ class Quill extends React.Component {
     } else {
       // I send an array of objects
       const response = await BackEnd.post("/editor", { ops });
+      //console.log(ops);
       console.log(response.statusText);
     }
+    this.props.history.push("/");
   };
 
   render() {
@@ -153,11 +159,10 @@ class Quill extends React.Component {
           modules={this.modules}
           formats={this.formats}
         />
-        <Link to={{ pathname: "/" }}>
-          <button className="ui primary button" onClick={this.saveToDB}>
-            Sauvegarder
-          </button>
-        </Link>
+
+        <button className="ui primary button" onClick={this.saveToDB}>
+          Sauvegarder
+        </button>
       </div>
     );
   }

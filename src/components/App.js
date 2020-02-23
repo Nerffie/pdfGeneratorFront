@@ -15,9 +15,7 @@ class App extends React.Component {
             <Route path="/" exact>
               <EditorsList />
             </Route>
-            <Route path="/editor/new" exact>
-              <Quill />
-            </Route>
+            <Route path="/editor/new" component={Quill}></Route>
             <Route path="/editor/id/:id" component={Quill}></Route>
             <Route path="/form" component={Form}></Route>
             <Route path="/editor/form" exact></Route>
