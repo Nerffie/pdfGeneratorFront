@@ -19,7 +19,7 @@ class Contract extends React.Component {
               state: { oldEditorContent: this.props.contract.ops }
             }}
           >
-            Contract : {this.props.contract.id}
+            Document : {this.props.contract.id}
           </Link>
         </div>
         <div className="description">
@@ -29,7 +29,7 @@ class Contract extends React.Component {
               state: { contract: this.props.contract.id }
             }}
           >
-            <button className="ui button">Generer formulaire</button>
+            <button className="ui button">Générer formulaire</button>
           </Link>
         </div>
       </div>
