@@ -67,6 +67,7 @@ class Form extends React.Component {
       if (this.state.var.length !== 0) {
         return (
           <div>
+            <h1>Formulaire</h1>
             Form id : {this.props.location.state.contract}
             <form>{this.splitVariable()}</form>
             <button className="ui button primary" onClick={this.buildVariable}>
@@ -77,6 +78,7 @@ class Form extends React.Component {
       } else {
         return (
           <div>
+            <h1>Formulaire</h1>
             Form id : {this.props.location.state.contract}
             <div>There are no variables.</div>
           </div>
@@ -85,6 +87,7 @@ class Form extends React.Component {
     } else {
       return (
         <div>
+          <h1>Formulaire</h1>
           Form id : {this.props.location.state.contract}
           <div>Fetching variables, please wait...</div>
         </div>

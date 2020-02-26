@@ -150,7 +150,7 @@ class Quill extends React.Component {
   render() {
     return (
       <div>
-        <h1>Quill Editor</h1>
+        <h1>Editeur de modèle</h1>
         <ReactQuill
           theme="snow"
           defaultValue={this.state.oldEditorContent}
