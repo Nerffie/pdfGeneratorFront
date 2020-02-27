@@ -6,7 +6,7 @@ class EditorsList extends React.Component {
   state = { contracts: [] };
 
   onPageLoad = async () => {
-    const response = await BackEnd.get("/contracts");
+    const response = await BackEnd.get("/models");
     //console.log(response.data);
     this.setState({ contracts: JSON.parse(response.data) });
   };
