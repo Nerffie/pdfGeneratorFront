@@ -3,37 +3,48 @@ import BackEnd from "../api/BackEnd";
 import FormItem from "./FormItem";
 
 class Form extends React.Component {
+  /*
+  Values correspond au valeurs rentrées par l'utilisateur dans le formulaire 
+  Occurences correspond aux types des variables dans leur ordre d'apparition
+  Le state contient var: string contenant les variables et leurs types et conctractId l'id du contrat
+  */
   values = [];
   occurences = [];
   constructor(props) {
     super(props);
-    this.state = { var: {}, contractId: null };
+    this.state = { var: {}, contractId: null, pdf: null };
   }
   componentDidMount() {
     this.onFormLoad();
   }
 
+  /*
+  Removing every white space from state.var string allows easier string manipulation
+  */
   onFormLoad = async () => {
     const response = await BackEnd.get(
       `/form/${this.props.location.state.contract}`
     );
-    //console.log(response.data);
-    //console.log(JSON.parse(response.data));
     this.setState({
-      var: JSON.parse(response.data).var,
+      var: JSON.parse(response.data).var.replace(/ /g, ""),
       contractId: JSON.parse(response.data).idContrat
     });
+    console.log(this.state.var);
   };
 
   parentCallback = (value, id) => {
     this.values[id] = value;
   };
 
+  /*
+  var est sous la forme suivante : "status":"texte","another":"number"
+  vars est un array sous forme : ["status":"texte","another":"number"]
+  */
   splitVariable() {
     const vars = this.state.var.split(",");
     let i = -1;
     return vars.map(e => {
-      let field = e.replace(/"/g, "").split(": ");
+      let field = e.replace(/"/g, "").split(":");
       i++;
       this.occurences[i] = field[1];
       return (
@@ -51,15 +62,16 @@ class Form extends React.Component {
   buildVariable = async () => {
     let newvar = this.state.var;
     this.occurences.forEach((occ, index) => {
-      newvar = newvar.replace(occ, this.values[index]);
+      newvar = newvar.replace(`:"${occ}"`, `:"${this.values[index]}"`);
     });
     const response = await BackEnd.post(
       `/form/${this.props.location.state.contract}`,
       newvar
     );
+    //console.log(newvar);
     console.log(response);
-    //console.log(this.props.history);
-    this.props.history.push("/");
+    //this.props.history.push(`/pdf/${response.data}`);
+    //this.setState({ pdf: response.data });
   };
 
   render() {
