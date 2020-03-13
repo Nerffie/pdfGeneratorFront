@@ -12,31 +12,14 @@ class FormItem extends React.Component {
 
   render() {
     const { type, name } = this.props;
-    //console.log(type);
-    //console.log(typeof type);
-    switch (type) {
-      case "date":
-        return (
-          <div>
-            <label>{name} : </label>
-            <input type="date" onChange={this.onInputChange}></input>
-          </div>
-        );
-      case "number":
-        return (
-          <div>
-            <label>{this.props.name} : </label>
-            <input type="number" onChange={this.onInputChange}></input>
-          </div>
-        );
-      default:
-        return (
-          <div>
-            <label>{this.props.name} : </label>
-            <input type="text" onChange={this.onInputChange}></input>
-          </div>
-        );
-    }
+    const inputType = type === "date" || type === "number" ? type : "text";
+
+    return (
+      <div>
+        <label>{name} : </label>
+        <input type={inputType} onChange={this.onInputChange}></input>
+      </div>
+    );
   }
 }
 
