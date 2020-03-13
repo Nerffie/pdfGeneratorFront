@@ -42,15 +42,13 @@ class Form extends React.Component {
   */
   splitVariable() {
     const vars = this.state.var.split(",");
-    let i = -1;
-    return vars.map(e => {
+    return vars.map((e, index) => {
       let field = e.replace(/"/g, "").split(":");
-      i++;
-      this.occurences[i] = field[1];
+      this.occurences[index] = field[1];
       return (
         <FormItem
-          key={i}
-          id={i}
+          key={index}
+          id={index}
           name={field[0]}
           type={field[1]}
           sendToParent={this.parentCallback}
