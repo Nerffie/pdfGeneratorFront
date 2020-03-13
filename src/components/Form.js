@@ -25,10 +25,12 @@ class Form extends React.Component {
     const response = await BackEnd.get(
       `/form/${this.props.location.state.contract}`
     );
+    const parsedJSON = JSON.parse(response.data);
     this.setState({
-      var: JSON.parse(response.data).var.replace(/ /g, ""),
-      contractId: JSON.parse(response.data).idContrat
+      var: parsedJSON.var.replace(/ /g, ""),
+      contractId: parsedJSON.idContrat
     });
+
     console.log(this.state.var);
   };
 

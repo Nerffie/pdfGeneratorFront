@@ -22,7 +22,7 @@ class EditorsList extends React.Component {
     return contracts;
   }
   render() {
-    if (this.state.contracts === []) {
+    if (!this.state.contracts.length) {
       return <div>Fetching contracts ...</div>;
     } else {
       return (
