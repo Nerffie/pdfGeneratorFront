@@ -12,7 +12,7 @@ class Form extends React.Component {
   occurences = [];
   constructor(props) {
     super(props);
-    this.state = { var: {}, contractId: null, pdf: null };
+    this.state = { var: {}, contractId: null, pdfReady: false };
   }
   componentDidMount() {
     this.onFormLoad();
@@ -59,49 +59,83 @@ class Form extends React.Component {
     });
   }
 
-  buildVariable = async () => {
+  buildVariable = async e => {
+    e.preventDefault();
     let newvar = this.state.var;
     this.occurences.forEach((occ, index) => {
       newvar = newvar.replace(`:"${occ}"`, `:"${this.values[index]}"`);
     });
+    this.setState({ pdfReady: true });
     const response = await BackEnd.post(
       `/form/${this.props.location.state.contract}`,
-      newvar
+      newvar,
+      { responseType: "blob" }
     );
-    //console.log(newvar);
-    console.log(response);
-    //this.props.history.push(`/pdf/${response.data}`);
-    //this.setState({ pdf: response.data });
+    const file = new Blob([response.data], {
+      type: "application/pdf"
+    });
+    //Build a URL from the file
+    const fileURL = URL.createObjectURL(file);
+    //Open the URL on new Window
+    window.open(fileURL);
+    this.props.history.push("/");
   };
 
   render() {
     if (this.state.contractId) {
       if (this.state.var.length !== 0) {
-        return (
-          <div>
-            <h1>Formulaire</h1>
-            Form id : {this.props.location.state.contract}
-            <form>{this.splitVariable()}</form>
-            <button className="ui button primary" onClick={this.buildVariable}>
-              Generer PDF
-            </button>
-          </div>
-        );
+        if (!this.state.pdfReady) {
+          return (
+            <div>
+              <h1 className="ui header">Formulaire</h1>
+              <div className="ui info message">
+                <div className="header">
+                  Formulaire id : {this.props.location.state.contract}{" "}
+                </div>
+              </div>
+
+              <form className="ui form">
+                {this.splitVariable()}
+                <button className="ui button" onClick={this.buildVariable}>
+                  <i className="file pdf outline icon"></i>
+                  Generer PDF
+                </button>
+              </form>
+            </div>
+          );
+        } else {
+          return (
+            <div className="segment">
+              <div className="ui active inverted dimmer">
+                <div className="ui large text loader">Génération du PDF...</div>
+              </div>
+            </div>
+          );
+        }
       } else {
         return (
           <div>
-            <h1>Formulaire</h1>
-            Form id : {this.props.location.state.contract}
-            <div>There are no variables.</div>
+            <h1 className="ui header">Formulaire</h1>
+            <div className="ui icon message red">
+              <i className="notched times  icon"></i>
+              <div className="content">
+                <div className="header">Oops !</div>
+                <p>Aucune variable n'a été détectée dans ce formulaire.</p>
+                <p>Formulaire id : {this.props.location.state.contract}</p>
+              </div>
+            </div>
           </div>
         );
       }
     } else {
       return (
-        <div>
-          <h1>Formulaire</h1>
-          Form id : {this.props.location.state.contract}
-          <div>Fetching variables, please wait...</div>
+        <div className="segment">
+          <h1 className="ui header">Formulaire</h1>
+          <div className="ui active inverted dimmer">
+            <div className="ui large text loader">
+              Récupération des variables...
+            </div>
+          </div>
         </div>
       );
     }

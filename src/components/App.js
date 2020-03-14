@@ -10,16 +10,15 @@ class App extends React.Component {
     return (
       <div className="container ui">
         <BrowserRouter>
-          <div>
-            <Header />
-            <Route path="/" exact>
-              <EditorsList />
-            </Route>
-            <Route path="/editor/new" component={Quill}></Route>
-            <Route path="/editor/id/:id" component={Quill}></Route>
-            <Route path="/form" component={Form}></Route>
-            <Route path="/editor/form" exact></Route>
-          </div>
+          <Header />
+
+          <Route path="/" exact>
+            <EditorsList />
+          </Route>
+          <Route path="/editor/new" component={Quill}></Route>
+          <Route path="/editor/id/:id" component={Quill}></Route>
+          <Route path="/form" component={Form}></Route>
+          <Route path="/editor/form" exact></Route>
         </BrowserRouter>
       </div>
     );

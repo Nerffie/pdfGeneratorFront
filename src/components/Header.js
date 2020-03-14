@@ -5,11 +5,17 @@ const Header = () => {
   return (
     <div className="ui secondary pointing menu">
       <Link to="/" className="item">
-        Home
+        <h3 className="ui header">
+          <i className="home icon"></i>
+          <div className="content">Accueil</div>
+        </h3>
       </Link>
       <div className="right menu">
         <Link to="/editor/new" className="item">
-          New
+          <h3 className="ui header">
+            <i className="plus icon"></i>
+            <div className="content">Nouveau</div>
+          </h3>
         </Link>
       </div>
     </div>

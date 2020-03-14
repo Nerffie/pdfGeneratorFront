@@ -12,25 +12,33 @@ class Contract extends React.Component {
     const pathToForm = `form`;
     return (
       <div className="item">
-        <div className="content">
+        <div className="right floated content">
           <Link
             to={{
               pathname: pathToEditor,
               state: { oldEditorContent: this.props.contract.ops }
             }}
           >
-            Document : {this.props.contract.id}
+            <div className="ui button olive">
+              <i className="edit icon"></i>Éditer
+            </div>
           </Link>
-        </div>
-        <div className="description">
           <Link
             to={{
               pathname: pathToForm,
               state: { contract: this.props.contract.id }
             }}
           >
-            <button className="ui button">Générer formulaire</button>
+            <div className="ui button brown">
+              <i className="linkify icon"></i>Générer formulaire
+            </div>
           </Link>
+        </div>
+        <div className="content">
+          <div>
+            <span className="ui header violet">Modèle id :</span>
+            <span className="description">{this.props.contract.id}</span>
+          </div>
         </div>
       </div>
     );

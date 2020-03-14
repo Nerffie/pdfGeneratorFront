@@ -23,10 +23,24 @@ class EditorsList extends React.Component {
   }
   render() {
     if (!this.state.contracts.length) {
-      return <div>Fetching contracts ...</div>;
+      return (
+        <div className="segment">
+          <h1 className="ui header">Liste des modèles</h1>
+          <div className="ui active inverted dimmer">
+            <div className="ui large text loader">
+              Récupération des modèles...
+            </div>
+          </div>
+        </div>
+      );
     } else {
       return (
-        <div className="ui relaxed divided list">{this.renderContracts()}</div>
+        <div>
+          <h1 className="ui header">Liste des modèles</h1>
+          <div className="ui middle aligned divided list">
+            {this.renderContracts()}
+          </div>
+        </div>
       );
     }
   }
