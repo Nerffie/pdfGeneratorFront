@@ -81,17 +81,20 @@ class Quill extends React.Component {
   };
 
   componentWillMount() {
-    //console.log(this.props.match);
-    //console.log(this.props);
     if (typeof this.props.location.state != "undefined") {
-      console.log("updating");
+      const parsedOldEditorContent = JSON.parse(
+        this.props.location.state.oldEditorContent
+      );
       this.setState({
         id: this.props.match.params.id,
-        oldEditorContent: JSON.parse(this.props.location.state.oldEditorContent)
+        oldEditorContent: parsedOldEditorContent,
+        content: parsedOldEditorContent
       });
     } else {
-      console.log("creating");
-      this.setState({ oldEditorContent: this.defaultContent });
+      this.setState({
+        oldEditorContent: this.defaultContent,
+        content: this.defaultContent
+      });
     }
   }
 
@@ -141,7 +144,6 @@ class Quill extends React.Component {
     } else {
       // I send an array of objects
       const response = await BackEnd.post("/editor", { ops });
-      //console.log(ops);
       console.log(response.statusText);
     }
     this.props.history.push("/");
@@ -154,7 +156,6 @@ class Quill extends React.Component {
         <ReactQuill
           theme="snow"
           defaultValue={this.state.oldEditorContent}
-          //value={this.state.content}
           onChange={this.handleChange}
           modules={this.modules}
           formats={this.formats}

@@ -30,8 +30,6 @@ class Form extends React.Component {
       var: parsedJSON.var.replace(/ /g, ""),
       contractId: parsedJSON.idContrat
     });
-
-    console.log(this.state.var);
   };
 
   parentCallback = (value, id) => {
