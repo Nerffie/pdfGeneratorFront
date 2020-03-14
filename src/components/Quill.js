@@ -9,7 +9,8 @@ class Quill extends React.Component {
     this.state = {
       content: {},
       id: null,
-      oldEditorContent: {}
+      oldEditorContent: {},
+      savedInDb: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.saveToDB = this.saveToDB.bind(this);
@@ -135,37 +136,43 @@ class Quill extends React.Component {
 
   saveToDB = async () => {
     const ops = this.state.content.ops;
+    this.setState({ savedInDb: true });
     if (typeof this.props.location.state != "undefined") {
-      const response = await BackEnd.put(
-        `/editor/id/${this.props.match.params.id}`,
-        { ops }
-      );
-      console.log(response.statusText);
+      await BackEnd.put(`/editor/id/${this.props.match.params.id}`, { ops });
     } else {
       // I send an array of objects
-      const response = await BackEnd.post("/editor", { ops });
-      console.log(response.statusText);
+      await BackEnd.post("/editor", { ops });
     }
     this.props.history.push("/");
   };
 
   render() {
-    return (
-      <div>
-        <h1>Editeur de modèle</h1>
-        <ReactQuill
-          theme="snow"
-          defaultValue={this.state.oldEditorContent}
-          onChange={this.handleChange}
-          modules={this.modules}
-          formats={this.formats}
-        />
+    if (!this.state.savedInDb) {
+      return (
+        <div>
+          <h1>Editeur de modèle</h1>
+          <ReactQuill
+            theme="snow"
+            defaultValue={this.state.oldEditorContent}
+            onChange={this.handleChange}
+            modules={this.modules}
+            formats={this.formats}
+          />
 
-        <button className="ui primary button" onClick={this.saveToDB}>
-          Sauvegarder
-        </button>
-      </div>
-    );
+          <button className="ui primary button" onClick={this.saveToDB}>
+            Sauvegarder
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="segment">
+          <div className="ui active inverted dimmer">
+            <div className="ui large text loader">Sauvegarde du modèle...</div>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

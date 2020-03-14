@@ -14,7 +14,7 @@ const Header = () => {
         <Link to="/editor/new" className="item">
           <h3 className="ui header">
             <i className="plus icon"></i>
-            <div className="content">Nouveau</div>
+            <div className="content">Nouveau Modèle</div>
           </h3>
         </Link>
       </div>
